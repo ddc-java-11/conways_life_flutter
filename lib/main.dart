@@ -56,17 +56,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             onPressed: _viewModel.reset,
           ),
-          IconButton(
-            icon: _running ? Icon(Icons.pause) : Icon(Icons.play_arrow),
-            onPressed: _toggleRunning,
-          ),
-          IconButton(
+          if (!_running) IconButton(
             icon: Icon(
               Icons.skip_next,
               color: Colors.white,
             ),
             onPressed: _viewModel.iterate,
-          )
+          ),
+          IconButton(
+            icon: _running ? Icon(Icons.pause) : Icon(Icons.play_arrow),
+            onPressed: _toggleRunning,
+          ),
         ],
       ),
       body: Center(
