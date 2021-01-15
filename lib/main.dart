@@ -5,7 +5,6 @@ import 'viewmodel/MainViewModel.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -21,26 +20,22 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-
   final String title;
 
   MyHomePage({Key key, this.title}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
-
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _running;
+  final _viewModel;
 
-  bool _running = false;
-  MainViewModel _viewModel = MainViewModel();
-
-  void _toggleRunning() {
-    setState(() {
-      _running = !_running;
-      _viewModel.toggleRunning();
-    });
+  _MyHomePageState() : _viewModel = MainViewModel() {
+    _running = false;
+    _viewModel.runningStream
+        .listen((running) => setState(() => _running = running));
   }
 
   @override
@@ -49,23 +44,25 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[
-          if (!_running) IconButton(
-            icon: Icon(
-              Icons.replay,
-              color: Colors.white,
+          if (!_running)
+            IconButton(
+              icon: Icon(
+                Icons.replay,
+                color: Colors.white,
+              ),
+              onPressed: _viewModel.reset,
             ),
-            onPressed: _viewModel.reset,
-          ),
-          if (!_running) IconButton(
-            icon: Icon(
-              Icons.skip_next,
-              color: Colors.white,
+          if (!_running)
+            IconButton(
+              icon: Icon(
+                Icons.skip_next,
+                color: Colors.white,
+              ),
+              onPressed: _viewModel.iterate,
             ),
-            onPressed: _viewModel.iterate,
-          ),
           IconButton(
             icon: _running ? Icon(Icons.pause) : Icon(Icons.play_arrow),
-            onPressed: _toggleRunning,
+            onPressed: _viewModel.toggleRunning,
           ),
         ],
       ),
@@ -94,5 +91,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
 }

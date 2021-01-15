@@ -11,6 +11,7 @@ class MainViewModel {
   static const _size = 500;
 
   final _density;
+  final _runningStreamController;
   final _iterationStreamController;
   final _populationStreamController;
   final _cellsStreamController;
@@ -19,14 +20,18 @@ class MainViewModel {
   SendPort _sendPort;
   bool _running;
 
+  Stream<bool> get runningStream => _runningStreamController.stream;
+
   Stream<int> get iterationStream => _iterationStreamController.stream;
 
   Stream<int> get populationStream => _populationStreamController.stream;
 
-  Stream<List<Uint8ClampedList>> get cellsStream => _cellsStreamController;
+  Stream<List<Uint8ClampedList>> get cellsStream =>
+      _cellsStreamController.stream;
 
   MainViewModel()
       : _receivePort = ReceivePort(),
+        _runningStreamController = StreamController<bool>(),
         _iterationStreamController = StreamController<int>(),
         _populationStreamController = StreamController<int>(),
         _cellsStreamController = StreamController<List<Uint8ClampedList>>(),
@@ -56,6 +61,7 @@ class MainViewModel {
     if (_running) {
       iterate();
     }
+    _runningStreamController.add(_running);
   }
 
   void reset() {
